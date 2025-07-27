@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use App\Models\Penjualan;
+use App\Models\DetilPenjualan;
 
 class DatabaseSeeder extends Seeder
 {
@@ -78,7 +80,67 @@ class DatabaseSeeder extends Seeder
     'stok' => 100,
     ]);
 
-    
+// Penjualan 1
+Penjualan::create([
+    'user_id' => 1,
+    'pelanggan_id' => 1,
+    'nomor_transaksi' => date('Ymd') . '@ee1',
+    'tanggal' => date('Y-m-d H:i:s'),
+    'subtotal' => 8500,
+    'pajak' => 850,
+    'total' => 9350,
+    'tunai' => 10000,
+    'kembalian' => 650,
+]);
+
+// Penjualan 2
+Penjualan::create([
+    'user_id' => 2,
+    'pelanggan_id' => 2,
+    'nomor_transaksi' => date('Ymd') . 'eee2',
+    'tanggal' => date('Y-m-d H:i:s'),
+    'subtotal' => 13500,
+    'pajak' => 1350,
+    'total' => 14850,
+    'tunai' => 20000,
+    'kembalian' => 5150,
+]);
+
+// Detil Penjualan untuk Penjualan ID 1
+DetilPenjualan::create([
+    'penjualan_id' => 1,
+    'produk_id' => 1,
+    'jumlah' => 1,
+    'harga_produk' => 5000,
+    'subtotal' => 5000,
+]);
+
+DetilPenjualan::create([
+    'penjualan_id' => 1,
+    'produk_id' => 2,
+    'jumlah' => 1,
+    'harga_produk' => 3500,
+    'subtotal' => 3500,
+]);
+
+// Detil Penjualan untuk Penjualan ID 2
+DetilPenjualan::create([
+    'penjualan_id' => 2,
+    'produk_id' => 1,
+    'jumlah' => 2,
+    'harga_produk' => 5000,
+    'subtotal' => 10000,
+]);
+
+DetilPenjualan::create([
+    'penjualan_id' => 2,
+    'produk_id' => 2,
+    'jumlah' => 1,
+    'harga_produk' => 3500,
+    'subtotal' => 3500,
+]);
+
+
 }
 
 }

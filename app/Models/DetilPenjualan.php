@@ -5,22 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Penjualan extends Model
+class DetilPenjualan extends Model
 {
     use HasFactory;
 
     public $timestamps = false;
 
     protected $fillable = [
-        'user_id',
-        'pelanggan_id',
-        'nomor_transaksi',
-        'tanggal',
-        'total',
-        'tunai',
-        'kembalian',
-        'status',
+        'penjualan_id',
+        'produk_id',
+        'jumlah',
+        'harga_produk',
         'subtotal',
-        'pajak'
     ];
 }

@@ -48,6 +48,13 @@
         :routes="['stok.index', 'stok.create']" 
         />
         
+        <x-nav-item 
+          title="Transaksi" 
+          icon="fas fa-cash-register"
+          :routes="['transaksi.index', 'transaksi.create', 'transaksi.show']" 
+        />
+
+
       </ul>
     </nav>
   </div>

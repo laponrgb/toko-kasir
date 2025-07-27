@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StokController;
@@ -44,7 +46,37 @@ Route::middleware('auth')->group(function () {
     Route::resource('produk', ProdukController::class);
     });
 
-    Route::middleware('auth')->group(function () {
+Route::middleware('auth')->group(function () {
     Route::get('stok/produk', [StokController::class, 'produk'])->name('stok.produk');
     Route::resource('stok', StokController::class)->only(['index', 'create', 'store', 'destroy']);
-});
+    });
+Route::middleware('auth')->group(function () {
+    Route::get('transaksi/produk', [TransaksiController::class, 'produk'])
+    ->name('transaksi.produk');
+
+// Pelanggan Autocomplete
+Route::get('transaksi/pelanggan', [TransaksiController::class, 'pelanggan'])
+    ->name('transaksi.pelanggan');
+
+// Cetak Invoice
+Route::get('transaksi/{transaksi}/cetak', [TransaksiController::class, 'cetak'])
+    ->name('transaksi.cetak');
+
+// Tambah Pelanggan ke Cart
+Route::post('transaksi/pelanggan', [TransaksiController::class, 'addPelanggan'])
+    ->name('transaksi.pelanggan.add');
+
+// Resource utama untuk Transaksi (tanpa edit dan update)
+Route::resource('transaksi', TransaksiController::class)
+    ->except(['edit', 'update']);
+
+// Clear semua isi cart
+Route::get('cart/clear', [CartController::class, 'clear'])
+    ->name('cart.clear');
+
+// Resource Cart (tanpa create, show, edit)
+Route::resource('cart', CartController::class)
+    ->except(['create', 'show', 'edit'])
+    ->parameters(['cart' => 'hash']);
+
+    });
