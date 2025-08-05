@@ -86,6 +86,11 @@ class TransaksiController extends Controller
                 'harga_produk' => $item->price,
                 'subtotal' => $item->subtotal,
             ]);
+
+            $produk = Produk::find($item->id);
+             if ($produk) {
+             $produk->decrement('stok', $item->quantity);
+    }
         }
 
         $cart->destroy();
