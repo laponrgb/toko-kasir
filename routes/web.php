@@ -3,12 +3,14 @@
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\LaporanController;
 use App\Http\Controllers\TransaksiController;
 use App\Http\Controllers\ProdukController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StokController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PelangganController;
+use App\Http\Controllers\laporan;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -78,5 +80,10 @@ Route::get('cart/clear', [CartController::class, 'clear'])
 Route::resource('cart', CartController::class)
     ->except(['create', 'show', 'edit'])
     ->parameters(['cart' => 'hash']);
+    });
 
+Route::middleware('auth')->group(function () {
+    Route::get('laporan', [LaporanController::class, 'index']) -> name('laporan.index');
+    Route::get('laporan/harian', [LaporanController::class, 'harian']) -> name('laporan.harian');
+    Route::get('laporan/bulanan', [LaporanController::class, 'bulanan']) -> name('laporan.bulanan');
     });

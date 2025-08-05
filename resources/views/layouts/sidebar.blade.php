@@ -14,27 +14,16 @@
           :routes="['home']" 
         />
 
-        @can('admin')
-          <x-nav-item 
-            title="User" 
-            icon="fas fa-user-tie"
-            :routes="['user.index', 'user.create', 'user.edit']" 
-          />
-        @endcan
-
         <x-nav-item 
-          title="Pelanggan" 
-          icon="fas fa-users"
-          :routes="['pelanggan.index', 'pelanggan.create', 'pelanggan.edit']" 
+          title="Transaksi" 
+          icon="fas fa-cash-register"
+          :routes="['transaksi.index', 'transaksi.create', 'transaksi.show']" 
         />
-
-        @can('admin')
-          <x-nav-item 
-            title="Kategori" 
-            icon="fas fa-list"
-            :routes="['kategori.index', 'kategori.create', 'kategori.edit']" 
-          />
-        @endcan
+        
+        <x-nav-item 
+        title="Laporan" 
+        icon="fas fa-print" 
+        :routes="['laporan.index']"/>
 
         <x-nav-item 
           title="Produk" 
@@ -48,12 +37,27 @@
         :routes="['stok.index', 'stok.create']" 
         />
         
+        @can('admin')
+          <x-nav-item 
+            title="Kategori" 
+            icon="fas fa-list"
+            :routes="['kategori.index', 'kategori.create', 'kategori.edit']" 
+          />
+        @endcan
+
         <x-nav-item 
-          title="Transaksi" 
-          icon="fas fa-cash-register"
-          :routes="['transaksi.index', 'transaksi.create', 'transaksi.show']" 
+          title="Pelanggan" 
+          icon="fas fa-users"
+          :routes="['pelanggan.index', 'pelanggan.create', 'pelanggan.edit']" 
         />
 
+        @can('admin')
+          <x-nav-item 
+            title="User" 
+            icon="fas fa-user-tie"
+            :routes="['user.index', 'user.create', 'user.edit']" 
+          />
+        @endcan
 
       </ul>
     </nav>

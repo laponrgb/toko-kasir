@@ -11,7 +11,6 @@
 
 
   <ul class="navbar-nav ml-auto">
-    <!-- Menu Logout -->
     <li class="nav-item dropdown">
       <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
         {{ Auth::user()->nama }}
@@ -31,14 +30,12 @@
       </div>
     </li>
 
-    <!-- Menu Profile -->
    <li class="nav-item dropdown">
     <div class="dropdown-menu dropdown-menu-right">
         
     </div>
   </li>
 
-    <!-- Widget Fullscreen -->
     <li class="nav-item">
       <a class="nav-link" data-widget="fullscreen" href="#" role="button">
         <i class="fas fa-expand-arrows-alt"></i>

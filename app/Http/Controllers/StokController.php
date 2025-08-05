@@ -58,7 +58,7 @@ class StokController extends Controller
 
         Stok::create($request->all());
 
-        $produk = Produk::find($request->produk_id);
+        $produk = Produk::find($request->produk_id);    
         $produk->update([
             'stok' => $produk->stok + $request->jumlah
         ]);
