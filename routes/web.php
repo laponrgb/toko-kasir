@@ -56,27 +56,21 @@ Route::middleware('auth')->group(function () {
     Route::get('transaksi/produk', [TransaksiController::class, 'produk'])
     ->name('transaksi.produk');
 
-// Pelanggan Autocomplete
 Route::get('transaksi/pelanggan', [TransaksiController::class, 'pelanggan'])
     ->name('transaksi.pelanggan');
 
-// Cetak Invoice
 Route::get('transaksi/{transaksi}/cetak', [TransaksiController::class, 'cetak'])
     ->name('transaksi.cetak');
 
-// Tambah Pelanggan ke Cart
 Route::post('transaksi/pelanggan', [TransaksiController::class, 'addPelanggan'])
     ->name('transaksi.pelanggan.add');
 
-// Resource utama untuk Transaksi (tanpa edit dan update)
 Route::resource('transaksi', TransaksiController::class)
     ->except(['edit', 'update']);
 
-// Clear semua isi cart
 Route::get('cart/clear', [CartController::class, 'clear'])
     ->name('cart.clear');
 
-// Resource Cart (tanpa create, show, edit)
 Route::resource('cart', CartController::class)
     ->except(['create', 'show', 'edit'])
     ->parameters(['cart' => 'hash']);

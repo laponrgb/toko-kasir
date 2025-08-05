@@ -1,3 +1,5 @@
+@extends('layouts.main', ['title' => 'Produk'])
+
 @section('title-content')
     <i class="fas fa-box-open mr-2"></i>
     Produk
