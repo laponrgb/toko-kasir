@@ -71,7 +71,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">Data user tidak ditemukan.</td>
+                            <td colspan="4" class="text-center text-muted">User tidak ditemukan</td>
                         </tr>
                     @endforelse
                 </tbody>

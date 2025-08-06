@@ -36,7 +36,7 @@ class PelangganController extends Controller
         $request->validate([
             'nama' => ['required', 'max:100'],
             'alamat' => ['nullable', 'max:560'],
-            'nomor_tlp' => ['nullable', 'max:14']
+            'nomor_tlp' => ['numeric','nullable', 'max:13']
         ]);
 
         Pelanggan::create($request->all());
@@ -61,7 +61,7 @@ class PelangganController extends Controller
         $request->validate([
             'nama' => ['required', 'max:100'],
             'alamat' => ['nullable', 'max:580'],
-            'nomor_tlp' => ['nullable', 'max:14']
+            'nomor_tlp' => ['nullable', 'max:13']
         ]);
 
         $pelanggan->update($request->all());

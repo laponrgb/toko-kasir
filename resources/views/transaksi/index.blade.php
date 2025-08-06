@@ -45,7 +45,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($penjualans as $key => $penjualan)
+                    @forelse ($penjualans as $key => $penjualan)
                         <tr>
                             <td>{{ $penjualans->firstItem() + $key }}</td>
                             <td>{{ $penjualan->nomor_transaksi }}</td>
@@ -66,7 +66,11 @@
                                 </a>
                             </td>
                         </tr>
-                    @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="8" class="text-center text-muted">Transaksi tidak ditemukan</td>
+                        </tr>
+                    @endforelse
                 </tbody>
             </table>
         </div>

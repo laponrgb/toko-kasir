@@ -25,7 +25,7 @@ class ProfileController extends Controller
         $request->validate([
             'nama' => ['required', 'max:160'],
             'username' => ['required', 'unique:users,username,' . $request->user()->id],
-            'password_baru' => ['nullable', 'max:100', 'confirmed'],
+            'password_baru' => ['required', 'nullable', 'max:100', 'confirmed'],
         ]);
 
         if ($request->password_baru) {
@@ -37,7 +37,7 @@ class ProfileController extends Controller
         } else {
             $request->user()->update($request->only('nama', 'username'));
         }
-
+        
         return redirect()->route('profile.show')->with('update', 'success');
     }
 }
