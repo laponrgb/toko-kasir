@@ -123,7 +123,10 @@ $(function() {
     fetchCart(); 
 
     function addRow(item) {
-        const { hash, title, quantity, price, total_price } = item;
+        const { hash, title, quantity, harga, total_price,options } = item;
+        
+        const { diskon, harga_produk } = options
+        const nilai_diskon = diskon ? `(-${diskon}%)`:'';
 
         let btn = `<button type="button" class="btn btn-xs btn-success mr-2" onclick="ePut('${hash}', 1)">
             <i class="fas fa-plus"></i></button>`;
@@ -137,7 +140,7 @@ $(function() {
         const row = `<tr>
             <td>${title}</td>
             <td>${quantity}</td>
-            <td>${rupiah(price)}</td>
+            <td>${rupiah(harga_produk)} ${nilai_diskon}</td>
             <td>${rupiah(total_price)}</td>
             <td>${btn}</td>
         </tr>`;

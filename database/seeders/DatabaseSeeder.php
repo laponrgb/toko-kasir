@@ -49,6 +49,7 @@ class DatabaseSeeder extends Seeder
     'kode_produk' => '1001',
     'nama_produk' => 'Chiki Taro',
     'harga' => 5000,
+    'harga_produk' => 5000,
     ]);
 
     \App\Models\Produk::create([
@@ -56,6 +57,7 @@ class DatabaseSeeder extends Seeder
     'kode_produk' => '1002',
     'nama_produk' => 'Le Mineral',
     'harga' => 3500,
+    'harga_produk' => 3500,
     ]);
 
     \App\Models\Stok::create([
@@ -80,7 +82,6 @@ class DatabaseSeeder extends Seeder
     'stok' => 100,
     ]);
 
-// Penjualan 1
 Penjualan::create([
     'user_id' => 1,
     'pelanggan_id' => 1,
@@ -93,7 +94,6 @@ Penjualan::create([
     'kembalian' => 650,
 ]);
 
-// Penjualan 2
 Penjualan::create([
     'user_id' => 2,
     'pelanggan_id' => 2,
@@ -106,7 +106,6 @@ Penjualan::create([
     'kembalian' => 5150,
 ]);
 
-// Detil Penjualan untuk Penjualan ID 1
 DetilPenjualan::create([
     'penjualan_id' => 1,
     'produk_id' => 1,
@@ -123,7 +122,6 @@ DetilPenjualan::create([
     'subtotal' => 3500,
 ]);
 
-// Detil Penjualan untuk Penjualan ID 2
 DetilPenjualan::create([
     'penjualan_id' => 2,
     'produk_id' => 1,

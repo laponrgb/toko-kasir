@@ -30,6 +30,10 @@
                         <label>Harga Produk</label>
                         <x-input name="harga" type="text" />
                     </div>
+                    <div class="form-group">
+                        <label>Diskon</label>
+                        <x-input name="diskon" type="text" />
+                    </div>
 
                     <div class="form-group">
                         <label>Kategori</label>
