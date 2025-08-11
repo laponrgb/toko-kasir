@@ -85,7 +85,7 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="7  " class="text-center text-muted">Produk tidak ditemukan</td>
+                            <td colspan="11 " class="text-center text-muted">Produk tidak ditemukan</td>
                         </tr>
                     @endforelse
                 </tbody>
