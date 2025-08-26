@@ -45,24 +45,25 @@ class CartController extends Controller
     }
 
     public function update(Request $request, $hash)
-    {
-        $request->validate([
-            'qty' => ['required', 'in:-1,1']
-        ]);
+{
+    $request->validate([
+        'qty' => ['required', 'integer', 'min:1']
+    ]);
 
-        $cart = Cart::name($request->user()->id);
-        $item = $cart->getItem($hash);
+    $cart = Cart::name($request->user()->id);
+    $item = $cart->getItem($hash);
 
-        if (!$item) {
-            return abort(404);
-        }
-
-        $cart->updateItem($item->getHash(), [
-            'quantity' => $item->getQuantity() + $request->qty
-        ]);
-
-        return response()->json(['message' => 'Berhasil diupdate.']);
+    if (!$item) {
+        return abort(404);
     }
+
+    $cart->updateItem($item->getHash(), [
+        'quantity' => $request->qty
+    ]);
+
+    return response()->json(['message' => 'Berhasil diupdate.']);
+}
+
 
     public function destroy(Request $request, $hash)
     {

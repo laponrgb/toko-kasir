@@ -123,46 +123,53 @@ $(function() {
     fetchCart(); 
 
     function addRow(item) {
-        const { hash, title, quantity, harga, total_price,options } = item;
-        
-        const { diskon, harga_produk } = options
-        const nilai_diskon = diskon ? `(-${diskon}%)`:'';
+    const { hash, title, quantity, harga, total_price, options } = item;
+    const { diskon, harga_produk } = options
+    const nilai_diskon = diskon ? `(-${diskon}%)` : '';
 
-        let btn = `<button type="button" class="btn btn-xs btn-success mr-2" onclick="ePut('${hash}', 1)">
-            <i class="fas fa-plus"></i></button>`;
+    // input number qty
+    const qtyInput = `
+        <input type="number" 
+               class="form-control form-control-sm text-center" 
+               value="${quantity}" 
+               min="1"
+               style="width:80px;"
+               onchange="ePut('${hash}', this.value)">
+    `;
 
-        btn += `<button type="button" class="btn btn-xs btn-primary mr-2" onclick="ePut('${hash}', -1)">
-            <i class="fas fa-minus"></i></button>`;
+    // tombol hapus saja
+    const btn = `
+        <button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
 
-        btn += `<button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
-            <i class="fas fa-times"></i></button>`;
+    const row = `<tr>
+        <td>${title}</td>
+        <td>${qtyInput}</td>
+        <td>${rupiah(harga_produk)} ${nilai_diskon}</td>
+        <td>${rupiah(total_price)}</td>
+        <td>${btn}</td>
+    </tr>`;
 
-        const row = `<tr>
-            <td>${title}</td>
-            <td>${quantity}</td>
-            <td>${rupiah(harga_produk)} ${nilai_diskon}</td>
-            <td>${rupiah(total_price)}</td>
-            <td>${btn}</td>
-        </tr>`;
-
-        $('#resultCart').append(row);
-    }
+    $('#resultCart').append(row);
+}
 
     function rupiah(number) {
         return new Intl.NumberFormat("id-ID").format(number);
     }
 
     window.ePut = function(hash, qty) {
-        $.ajax({
-            type: "PUT",
-            url: "/cart/" + hash,
-            data: { qty: qty },
-            dataType: "json",
-            success: function(response) {
-                fetchCart();
-            }
-        });
-    }
+    $.ajax({
+        type: "PUT",
+        url: "/cart/" + hash,
+        data: { qty: qty },
+        dataType: "json",
+        success: function(response) {
+            fetchCart();
+        }
+    });
+}
 
     window.addItem = function(kode, nama, harga) {
         $.ajax({
