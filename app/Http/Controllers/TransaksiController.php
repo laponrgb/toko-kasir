@@ -117,13 +117,25 @@ class TransaksiController extends Controller
     }
 
     public function destroy(Request $request, Penjualan $transaksi)
-    {
+{
+    if ($transaksi->status !== 'batal') {
+        $detilPenjualan = DetilPenjualan::where('penjualan_id', $transaksi->id)->get();
+
+        foreach ($detilPenjualan as $detil) {
+            $produk = Produk::find($detil->produk_id);
+            if ($produk) {
+                $produk->increment('stok', $detil->jumlah);
+            }
+        }
+
         $transaksi->update([
             'status' => "batal"
         ]);
-
-        return back()->with('destroy', 'success');
     }
+
+    return back()->with('destroy', 'success');
+}
+
 
     public function produk(Request $request)
     {
