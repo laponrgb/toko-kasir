@@ -73,7 +73,10 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center text-muted">User tidak ditemukan</td>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="fas fa-user-tie fa-3x d-block mb-2"></i>
+                                <div>Produk tidak ditemukan</div>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

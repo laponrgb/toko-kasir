@@ -72,7 +72,10 @@
 
                         @empty
                         <tr>
-                            <td colspan="3" class="text-center text-muted">Kategori tidak ditemukan</td>
+                            <td colspan="6" class="text-center text-muted py-4">
+                                <i class="fas fa-box-open fa-3x d-block mb-2"></i>
+                                <div>Produk tidak ditemukan</div>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>

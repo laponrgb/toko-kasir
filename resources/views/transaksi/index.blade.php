@@ -68,7 +68,10 @@
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="8" class="text-center text-muted">Transaksi tidak ditemukan</td>
+                            <td colspan="8" class="text-center text-muted py-4">
+                                <i class="fas fa-cash-register fa-3x d-block mb-2"></i>
+                                <div>Produk tidak ditemukan</div>
+                            </td>
                         </tr>
                     @endforelse
                 </tbody>
