@@ -124,37 +124,55 @@ $(function() {
     fetchCart(); 
 
     function addRow(item) {
-        const { hash, title, quantity, harga, total_price, options } = item;
-        const { diskon, harga_produk } = options;
-        const nilai_diskon = diskon ? `(-${diskon}%)` : '';
+    const { hash, title, quantity, harga, total_price, options } = item;
+    const { diskon, harga_produk, stok } = options;
+    const nilai_diskon = diskon ? `(-${diskon}%)` : '';
 
-        // input number qty
-        const qtyInput = `
+    // input number qty dengan validasi max stok
+    const qtyInput = `
+        <div class="d-flex flex-column align-items-center">
             <input type="number" 
+                   id="qty_${hash}"
                    class="form-control form-control-sm text-center" 
                    value="${quantity}" 
-                   min="1"
+                   min="1" 
+                   max="${stok}" 
                    style="width:80px;"
-                   onchange="ePut('${hash}', this.value)">
-        `;
+                   onchange="handleQtyChange('${hash}', this.value, ${stok})">
+            <small class="text-muted">Stok: ${stok}</small>
+        </div>
+    `;
 
-        // tombol hapus
-        const btn = `
-            <button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
-                <i class="fas fa-times"></i>
-            </button>
-        `;
+    const btn = `
+        <button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
+            <i class="fas fa-times"></i>
+        </button>
+    `;
 
-        const row = `<tr>
-            <td>${title}</td>
-            <td>${qtyInput}</td>
-            <td>${rupiah(harga_produk)} ${nilai_diskon}</td>
-            <td>${rupiah(total_price)}</td>
-            <td>${btn}</td>
-        </tr>`;
+    const row = `<tr>
+        <td>${title}</td>
+        <td>${qtyInput}</td>
+        <td>${rupiah(harga_produk)} ${nilai_diskon}</td>
+        <td>${rupiah(total_price)}</td>
+        <td>${btn}</td>
+    </tr>`;
 
-        $('#resultCart').append(row);
+    $('#resultCart').append(row);
+}
+
+window.handleQtyChange = function(hash, val, stok) {
+    let qty = parseInt(val);
+
+    if (isNaN(qty) || qty < 1) {
+        qty = 1;
+    } else if (qty > stok) {
+        qty = stok; // ✅ auto set ke stok maksimal
+        $(`#qty_${hash}`).val(stok); // update input supaya sinkron
     }
+
+    ePut(hash, qty);
+}
+
 
     function rupiah(number) {
         return new Intl.NumberFormat("id-ID").format(number);
