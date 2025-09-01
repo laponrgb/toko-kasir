@@ -54,7 +54,6 @@
                         <th>Harga Produk</th>
                         <th>Diskon</th>
                         <th>Harga Jual</th>
-                        <th>Harga</th>
                         <th>Stok</th>
                         <th></th>
                     </tr>
@@ -68,7 +67,6 @@
                             <td>{{ $produk->nama_kategori }}</td>
                             <td>{{ $produk->harga_produk }}</td>
                             <td>{{ $produk->diskon }}</td>
-                            <td>{{ $produk->harga }}</td>
                             <td>{{ $produk->harga }}</td>
                             <td>{{ $produk->stok }}</td>
                             <td class="text-right">

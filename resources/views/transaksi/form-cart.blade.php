@@ -91,6 +91,7 @@
 </form>
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
 $(function() {
     window.fetchCart = function() {
@@ -123,55 +124,57 @@ $(function() {
     fetchCart(); 
 
     function addRow(item) {
-    const { hash, title, quantity, harga, total_price, options } = item;
-    const { diskon, harga_produk } = options
-    const nilai_diskon = diskon ? `(-${diskon}%)` : '';
+        const { hash, title, quantity, harga, total_price, options } = item;
+        const { diskon, harga_produk } = options;
+        const nilai_diskon = diskon ? `(-${diskon}%)` : '';
 
-    // input number qty
-    const qtyInput = `
-        <input type="number" 
-               class="form-control form-control-sm text-center" 
-               value="${quantity}" 
-               min="1"
-               style="width:80px;"
-               onchange="ePut('${hash}', this.value)">
-    `;
+        // input number qty
+        const qtyInput = `
+            <input type="number" 
+                   class="form-control form-control-sm text-center" 
+                   value="${quantity}" 
+                   min="1"
+                   style="width:80px;"
+                   onchange="ePut('${hash}', this.value)">
+        `;
 
-    // tombol hapus saja
-    const btn = `
-        <button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
-            <i class="fas fa-times"></i>
-        </button>
-    `;
+        // tombol hapus
+        const btn = `
+            <button type="button" class="btn btn-xs btn-danger" onclick="eDel('${hash}')">
+                <i class="fas fa-times"></i>
+            </button>
+        `;
 
-    const row = `<tr>
-        <td>${title}</td>
-        <td>${qtyInput}</td>
-        <td>${rupiah(harga_produk)} ${nilai_diskon}</td>
-        <td>${rupiah(total_price)}</td>
-        <td>${btn}</td>
-    </tr>`;
+        const row = `<tr>
+            <td>${title}</td>
+            <td>${qtyInput}</td>
+            <td>${rupiah(harga_produk)} ${nilai_diskon}</td>
+            <td>${rupiah(total_price)}</td>
+            <td>${btn}</td>
+        </tr>`;
 
-    $('#resultCart').append(row);
-}
+        $('#resultCart').append(row);
+    }
 
     function rupiah(number) {
         return new Intl.NumberFormat("id-ID").format(number);
     }
 
+    // update qty
     window.ePut = function(hash, qty) {
-    $.ajax({
-        type: "PUT",
-        url: "/cart/" + hash,
-        data: { qty: qty },
-        dataType: "json",
-        success: function(response) {
-            fetchCart();
-        }
-    });
-}
+        $.ajax({
+            type: "PUT",
+            url: "/cart/" + hash,
+            data: { qty: qty },
+            dataType: "json",
+            success: function(response) {
+                fetchCart();
+            }
+        });
+    }
 
-    window.addItem = function(kode, nama, harga) {
+    // tambah item
+    window.addItem = function(kode) {
         $.ajax({
             type: "POST",
             url: "/cart",
@@ -183,11 +186,16 @@ $(function() {
                 fetchCart();
             },
             error: function(xhr) {
-                alert("Gagal menambahkan item. Pastikan produk valid.");
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: 'Gagal menambahkan item. Pastikan produk valid.'
+                });
             }
         });
     }
 
+    // hapus item
     window.eDel = function(hash) {
         $.ajax({
             type: "DELETE",
@@ -198,6 +206,38 @@ $(function() {
             }
         });
     }
+
+    // validasi stok saat submit transaksi
+    $('form[action="{{ route('transaksi.store') }}"]').on('submit', function(e) {
+        e.preventDefault(); // tahan submit dulu
+
+        $.getJSON("/cart", function(response) {
+            const { items } = response;
+            let pesanError = "";
+
+            if (items && typeof items === 'object') {
+                for (const property in items) {
+                    const item = items[property];
+                    const { title, quantity, options } = item;
+                    const stok = options.stok ?? 0;
+
+                    if (quantity > stok) {
+                        pesanError += `${title}, stok tersedia ${stok}<br>`;
+                    }
+                }
+            }
+
+            if (pesanError) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Stok produk tidak mencukupi',
+                    html: pesanError,
+                });
+            } else {
+                e.target.submit(); // lanjut submit kalau stok aman
+            }
+        });
+    });
 });
 </script>
 @endpush
