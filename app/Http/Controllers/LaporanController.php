@@ -23,7 +23,7 @@ class LaporanController extends Controller
                 'pelanggans.nama as nama_pelanggan',
                 'users.nama as nama_kasir'
             )
-            ->orderBy('id')
+            ->orderBy('tanggal') // biar urut sesuai jam transaksi
             ->get();
 
         return view('laporan.harian', [
@@ -34,14 +34,18 @@ class LaporanController extends Controller
     public function bulanan(Request $request)
     {
         $penjualan = Penjualan::select(
-                DB::raw('COUNT(id) as jumlah_transaksi'),
-                DB::raw('SUM(total) as jumlah_total'),
-                DB::raw("DATE_FORMAT(tanggal, '%d/%m/%Y') as tgl")
-            )
-            ->whereMonth('tanggal', $request->bulan)
-            ->whereYear('tanggal', $request->tahun)
-            ->groupBy('tgl')
-            ->get();
+            DB::raw("DATE_FORMAT(tanggal, '%d/%m/%Y') as tgl"),
+            DB::raw("SUM(CASE WHEN status = 'selesai' THEN 1 ELSE 0 END) as transaksi_sukses"),
+            DB::raw("SUM(CASE WHEN status = 'batal' THEN 1 ELSE 0 END) as transaksi_batal"),
+            DB::raw("SUM(CASE WHEN status IN ('selesai','batal') THEN 1 ELSE 0 END) as jumlah_transaksi"),
+            DB::raw("SUM(CASE WHEN status = 'selesai' THEN total ELSE 0 END) as total_sukses"),
+            DB::raw("SUM(CASE WHEN status = 'batal' THEN total ELSE 0 END) as total_batal")
+        )
+        ->whereMonth('tanggal', $request->bulan)
+        ->whereYear('tanggal', $request->tahun)
+        ->groupBy('tgl')
+        ->get();
+
 
         $nama_bulan = [
             'Januari', 'Februari', 'Maret', 'April', 'Mei',
@@ -58,4 +62,6 @@ class LaporanController extends Controller
             'bulan' => $bulan
         ]);
     }
+
+    
 }

@@ -7,6 +7,7 @@
 @section('content')
 <div class="row">
 
+    {{-- Laporan Harian --}}
     <div class="col-lg-6 col-xl-4">
         <form target="_blank" method="GET" action="{{ route('laporan.harian') }}" class="card card-orange card-outline">
             <div class="card-header">
@@ -15,7 +16,9 @@
             <div class="card-body">
                 <div class="form-group">
                     <label>Tanggal</label>
-                    <input type="date" name="tanggal" class="form-control">
+                    {{-- Default isi hari ini --}}
+                    <input type="date" name="tanggal" class="form-control"
+                           value="{{ date('Y-m-d') }}">
                 </div>
             </div>
             <div class="card-footer">
@@ -26,6 +29,7 @@
         </form>
     </div>
 
+    {{-- Laporan Bulanan --}}
     <div class="col-lg-6 col-xl-4">
         <form target="_blank" method="GET" action="{{ route('laporan.bulanan') }}" class="card card-orange card-outline">
             <div class="card-header">
@@ -40,23 +44,30 @@
                                 'Pilih Bulan:', 'Januari', 'Februari', 'Maret', 'April', 'Mei',
                                 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
                             ];
+                            $bulanSekarang = date('n'); // 1-12
                         @endphp
                         <select name="bulan" class="form-control">
                             @foreach ($pilihan as $key => $value)
-                                <option value="{{ $key ? $key : '' }}">{{ $value }}</option>
+                                <option value="{{ $key ? $key : '' }}" 
+                                    {{ $key == $bulanSekarang ? 'selected' : '' }}>
+                                    {{ $value }}
+                                </option>
                             @endforeach
                         </select>
                     </div>
                     <div class="col">
                         <label>Tahun</label>
+                        @php
+                            $tahunSekarang = date('Y');
+                            $max = $tahunSekarang - 5;
+                        @endphp
                         <select name="tahun" class="form-control">
                             <option value="">Pilih Tahun:</option>
-                            @php
-                                $tahun = date('Y');
-                                $max = $tahun - 5;
-                            @endphp
-                            @for ($tahun; $tahun > $max; $tahun--)
-                                <option value="{{ $tahun }}">{{ $tahun }}</option>
+                            @for ($tahun = $tahunSekarang; $tahun > $max; $tahun--)
+                                <option value="{{ $tahun }}" 
+                                    {{ $tahun == $tahunSekarang ? 'selected' : '' }}>
+                                    {{ $tahun }}
+                                </option>
                             @endfor
                         </select>
                     </div>

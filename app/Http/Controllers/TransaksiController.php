@@ -49,54 +49,69 @@ class TransaksiController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'pelanggan_id' => ['required', 'exists:pelanggans,id'],
-            'cash' => ['required', 'numeric', 'gte:total_bayar']
-        ]);
+{
+    $request->validate([
+        'cash' => ['required', 'numeric', 'gte:total_bayar']
+    ]);
 
-        $user = $request->user();
-        $lastPenjualan = Penjualan::orderBy('id', 'desc')->first();
-        $cart = Cart::name($user->id);
-        $cartDetails = $cart->getDetails();
+    $user = $request->user();
+    $lastPenjualan = Penjualan::orderBy('id', 'desc')->first();
+    $cart = Cart::name($user->id);
+    $cartDetails = $cart->getDetails();
 
-        $total = $cartDetails->get('total');
-        $kembalian = $request->cash - $total;
-        $no = $lastPenjualan ? $lastPenjualan->id + 1 : 1;
-        $no = sprintf("%04d", $no);
+    $total = $cartDetails->get('total');
+    $kembalian = $request->cash - $total;
+    $no = $lastPenjualan ? $lastPenjualan->id + 1 : 1;
+    $no = sprintf("%04d", $no);
 
-        $penjualan = Penjualan::create([
-            'user_id' => $user->id,
-            'pelanggan_id' => $cart->getExtraInfo('pelanggan.id'),
-            'nomor_transaksi' => date('Ymd') . $no,
-            'tanggal' => date('Y-m-d H:i:s'),
-            'total' => $total,
-            'tunai' => $request->cash,
-            'kembalian' => $kembalian,
-            'pajak' => $cartDetails->get('tax_amount'),
-            'subtotal' => $cartDetails->get('subtotal')
-        ]);
+    // === Cek pelanggan ===
+    $pelangganId = $cart->getExtraInfo('pelanggan.id');
 
-        $allItems = $cartDetails->get('items');
-        foreach ($allItems as $item) {
-            DetilPenjualan::create([
-                'penjualan_id' => $penjualan->id,
-                'produk_id' => $item->id,
-                'jumlah' => $item->quantity,
-                'harga_produk' => $item->price,
-                'subtotal' => $item->subtotal,
-            ]);
-
-            $produk = Produk::find($item->id);
-             if ($produk) {
-             $produk->decrement('stok', $item->quantity);
+    if (!$pelangganId) {
+        // Kalau tidak ada pelanggan dipilih → cari/insert default "Pelanggan"
+        $defaultPelanggan = Pelanggan::firstOrCreate(
+            ['nama' => 'Pelanggan'],
+            ['alamat' => '-', 'telepon' => '-'] // kolom default
+        );
+        $pelangganId = $defaultPelanggan->id;
     }
+
+    // === Simpan transaksi utama ===
+    $penjualan = Penjualan::create([
+        'user_id' => $user->id,
+        'pelanggan_id' => $pelangganId,
+        'nomor_transaksi' => date('Ymd') . $no,
+        'tanggal' => date('Y-m-d H:i:s'),
+        'total' => $total,
+        'tunai' => $request->cash,
+        'kembalian' => $kembalian,
+        'pajak' => $cartDetails->get('tax_amount'),
+        'subtotal' => $cartDetails->get('subtotal')
+    ]);
+
+    // === Simpan detail transaksi + kurangi stok ===
+    $allItems = $cartDetails->get('items');
+    foreach ($allItems as $item) {
+        DetilPenjualan::create([
+            'penjualan_id' => $penjualan->id,
+            'produk_id' => $item->id,
+            'jumlah' => $item->quantity,
+            'harga_produk' => $item->price,
+            'subtotal' => $item->subtotal,
+        ]);
+
+        $produk = Produk::find($item->id);
+        if ($produk) {
+            $produk->decrement('stok', $item->quantity);
         }
-
-        $cart->destroy();
-
-        return redirect()->route('transaksi.show', ['transaksi' => $penjualan->id]);
     }
+
+    // Hapus keranjang setelah disimpan
+    $cart->destroy();
+
+    return redirect()->route('transaksi.show', ['transaksi' => $penjualan->id]);
+}
+
 
     public function show(Request $request, Penjualan $transaksi)
     {
