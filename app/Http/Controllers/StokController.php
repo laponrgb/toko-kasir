@@ -79,6 +79,31 @@ class StokController extends Controller
         return redirect()->route('stok.index')->with('store', 'success');
     }
 
+    public function storeMultiple(Request $request)
+{
+    $request->validate([
+        'stok' => ['required', 'array'],
+        'stok.*.produk_id' => ['required', 'exists:produks,id'],
+        'stok.*.jumlah' => ['required', 'numeric'],
+        'stok.*.nama_suplier' => ['required', 'max:150'],
+    ]);
+
+    foreach ($request->stok as $stokData) {
+        $stokData['tanggal'] = date('Y-m-d');
+
+        // Simpan stok baru
+        $stok = Stok::create($stokData);
+
+        // Update stok produk
+        $produk = Produk::find($stokData['produk_id']);
+        $produk->update([
+            'stok' => $produk->stok + $stokData['jumlah']
+        ]);
+    }
+
+    return redirect()->route('stok.index')->with('store', 'success');
+}
+
     public function destroy(Stok $stok)
     {
         $produk = Produk::find($stok->produk_id);

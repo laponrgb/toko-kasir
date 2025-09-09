@@ -25,15 +25,17 @@
     @endif
 
     <div class="card card-orange card-outline">
-        <div class="card-header form-inline">
-            <a href="{{ route('kategori.create') }}" class="btn btn-primary">
+        <div class="card-header d-flex">
+            {{-- Tombol Tambah --}}
+            <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#formTambahKategori">
                 <i class="fas fa-plus mr-2"></i> Tambah
-            </a>
+            </button>
 
+            {{-- Form Pencarian --}}
             <form action="?" method="get" class="ml-auto">
                 <div class="input-group">
                     <input type="text" class="form-control" name="search" value="{{ request()->search }}"
-                        placeholder="Nama Kategori">
+                        placeholder="Cari Kategori">
                     <div class="input-group-append">
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-search"></i>
@@ -41,6 +43,25 @@
                     </div>
                 </div>
             </form>
+        </div>
+
+        {{-- Form Tambah Kategori (Collapse) --}}
+        <div class="collapse" id="formTambahKategori">
+            <div class="card-body border-bottom">
+                <form method="POST" action="{{ route('kategori.store') }}">
+                    @csrf
+                    <div class="form-group">
+                        <label>Nama Kategori</label>
+                        <x-input name="nama_kategori" type="text" placeholder="Masukkan nama kategori" />
+                        @error('nama_kategori')
+                            <small class="text-danger">{{ $message }}</small>
+                        @enderror
+                    </div>
+                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-secondary" data-toggle="collapse"
+                        data-target="#formTambahKategori">Batal</button>
+                </form>
+            </div>
         </div>
 
         <div class="card-body p-0">
@@ -74,7 +95,7 @@
                         <tr>
                             <td colspan="6" class="text-center text-muted py-4">
                                 <i class="fas fa-box-open fa-3x d-block mb-2"></i>
-                                <div>Produk tidak ditemukan</div>
+                                <div>Kategori tidak ditemukan</div>
                             </td>
                         </tr>
                     @endforelse
