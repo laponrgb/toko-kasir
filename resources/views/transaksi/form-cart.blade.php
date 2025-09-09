@@ -128,6 +128,7 @@ $(function() {
     const { diskon, harga_produk, stok } = options;
     const nilai_diskon = diskon ? `(-${diskon}%)` : '';
 
+    // input number qty dengan validasi max stok
     const qtyInput = `
         <div class="d-flex flex-column align-items-center">
             <input type="number" 
@@ -165,8 +166,8 @@ window.handleQtyChange = function(hash, val, stok) {
     if (isNaN(qty) || qty < 1) {
         qty = 1;
     } else if (qty > stok) {
-        qty = stok;
-        $(`#qty_${hash}`).val(stok);
+        qty = stok; // ✅ auto set ke stok maksimal
+        $(`#qty_${hash}`).val(stok); // update input supaya sinkron
     }
 
     ePut(hash, qty);
@@ -177,6 +178,7 @@ window.handleQtyChange = function(hash, val, stok) {
         return new Intl.NumberFormat("id-ID").format(number);
     }
 
+    // update qty
     window.ePut = function(hash, qty) {
         $.ajax({
             type: "PUT",
@@ -189,6 +191,7 @@ window.handleQtyChange = function(hash, val, stok) {
         });
     }
 
+    // tambah item
     window.addItem = function(kode) {
         $.ajax({
             type: "POST",
@@ -210,6 +213,7 @@ window.handleQtyChange = function(hash, val, stok) {
         });
     }
 
+    // hapus item
     window.eDel = function(hash) {
         $.ajax({
             type: "DELETE",
@@ -221,8 +225,10 @@ window.handleQtyChange = function(hash, val, stok) {
         });
     }
 
+    // validasi stok saat submit transaksi
     $('form[action="{{ route('transaksi.store') }}"]').on('submit', function(e) {
-        e.preventDefault();
+        e.preventDefault(); // tahan submit dulu
+
         $.getJSON("/cart", function(response) {
             const { items } = response;
             let pesanError = "";
@@ -246,7 +252,8 @@ window.handleQtyChange = function(hash, val, stok) {
                     html: pesanError,
                 });
             } else {
-                e.target.submit();
+                e.target.submit(); 
+            }
         });
     });
 });
