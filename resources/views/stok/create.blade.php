@@ -74,8 +74,9 @@
                 <table class="table table-sm table-striped table-hover mt-3">
                     <thead>
                         <tr>
-                            <th>#</th>
+                            <th>Kode</th>
                             <th>Nama Produk</th>
+                            <th>Kategori</th>
                             <th></th>
                         </tr>
                     </thead>
@@ -86,7 +87,6 @@
     </div>
 </div>
 @endpush
-
 @push('scripts')
 <script>
     $(function () {
@@ -102,10 +102,11 @@
             let url = "{{ route('stok.produk') }}?search=" + encodeURIComponent(search);
             $.getJSON(url, function (result) {
                 $('#resultProduk').html('');
-                result.forEach((produk, index) => {
+                result.forEach((produk) => {
                     let row = `<tr>
-                        <td>${index + 1}</td>
+                        <td>${produk.kode_produk}</td>
                         <td>${produk.nama_produk}</td>
+                        <td>${produk.nama_kategori}</td>
                         <td class="text-right">
                             <button type="button" class="btn btn-xs btn-success"
                                 onclick="addProduk(${produk.id}, '${produk.nama_produk}')">

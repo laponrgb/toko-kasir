@@ -30,6 +30,16 @@ class ProdukController extends Controller
 
     public function create()
     {
+        $lastProduk = Produk::orderBy('id', 'desc')->first();
+        $nextCode = 'P0001';
+
+        if ($lastProduk) {
+            $lastCode = $lastProduk->kode_produk;
+            $number = intval(substr($lastCode, 1));
+            $nextNumber = $number + 1;
+            $nextCode = 'P' . str_pad($nextNumber, 4, '0', STR_PAD_LEFT);
+        }
+
         $datakategori = Kategori::orderBy('nama_kategori')->get();
         $kategoris = [['', 'Pilih Kategori:']];
 
@@ -38,7 +48,8 @@ class ProdukController extends Controller
         }
 
         return view('produk.create', [
-            'kategoris' => $kategoris
+            'kategoris' => $kategoris,
+            'nextCode'  => $nextCode
         ]);
     }
 
@@ -60,6 +71,33 @@ class ProdukController extends Controller
         ]);
 
         Produk::create($request->all());
+
+        return redirect()->route('produk.index')->with('store', 'success');
+    }
+
+    public function storeMultiple(Request $request)
+    {
+        $request->validate([
+            'produk' => 'required|array|min:1',
+            'produk.*.kode_produk' => ['required', 'max:250', 'unique:produks,kode_produk'],
+            'produk.*.nama_produk' => ['required', 'max:150'],
+            'produk.*.harga' => ['required', 'numeric'],
+            'produk.*.kategori_id' => ['required', 'exists:kategoris,id'],
+            'produk.*.diskon' => ['required','between:0,100'],
+        ]);
+
+        foreach ($request->produk as $data) {
+            $hargaSetelahDiskon = $data['harga'] - ($data['harga'] * $data['diskon'] / 100);
+
+            Produk::create([
+                'kode_produk'  => $data['kode_produk'],
+                'nama_produk'  => $data['nama_produk'],
+                'harga_produk' => $data['harga'],
+                'harga'        => $hargaSetelahDiskon,
+                'diskon'       => $data['diskon'],
+                'kategori_id'  => $data['kategori_id'],
+            ]);
+        }
 
         return redirect()->route('produk.index')->with('store', 'success');
     }

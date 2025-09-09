@@ -47,7 +47,9 @@
                     <tr>
                         <th>#</th>
                         <th>Nama Produk</th>
+                        <th>Kode Produk</th>
                         <th>Jumlah</th>
+                        <th>Kategori</th>
                         <th>Nama Suplier</th>
                         <th>Tanggal</th>
                         <th></th>
@@ -58,7 +60,9 @@
                         <tr>
                             <td>{{ $stoks->firstItem() + $key }}</td>
                             <td>{{ $stok->nama_produk }}</td>
+                            <td>{{ $stok->kode_produk }}</td>
                             <td>{{ $stok->jumlah }}</td>
+                            <td>{{ $stok->nama_kategori }}</td>
                             <td>{{ $stok->nama_suplier }}</td>
                             <td>{{ $stok->tanggal }}</td>
                             <td class="text-right">
@@ -72,7 +76,7 @@
                                 </button>
                             </td>
                         </tr>
-                        @empty
+                    @empty
                         <tr>
                             <td colspan="11" class="text-center text-muted py-4">
                                 <i class="fas fa-box-open fa-3x d-block mb-2"></i>
@@ -82,6 +86,7 @@
                     @endforelse
                 </tbody>
             </table>
+
         </div>
 
         <div class="card-footer">

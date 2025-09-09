@@ -13,10 +13,16 @@ class StokController extends Controller
         $search = $request->search;
 
         $stoks = Stok::join('produks', 'produks.id', '=', 'stoks.produk_id')
-            ->select('stoks.*', 'nama_produk')
+            ->join('kategoris', 'kategoris.id', '=', 'produks.kategori_id')
+            ->select(
+                'stoks.*',
+                'produks.nama_produk',
+                'produks.kode_produk',
+                'kategoris.nama_kategori'
+            )
             ->orderBy('stoks.id', 'desc')
             ->when($search, function ($q, $search) {
-                return $q->where('tanggal', 'like', "%{$search}%");
+                return $q->where('stoks.tanggal', 'like', "%{$search}%");
             })
             ->paginate();
 
@@ -24,9 +30,7 @@ class StokController extends Controller
             $stoks->appends(['search' => $search]);
         }
 
-        return view('stok.index', [
-            'stoks' => $stoks
-        ]);
+        return view('stok.index', compact('stoks'));
     }
 
     public function create()
@@ -36,8 +40,17 @@ class StokController extends Controller
 
     public function produk(Request $request)
     {
-        $produks = Produk::select('id', 'nama_produk')
-            ->where('nama_produk', 'like', "%{$request->search}%")
+        $produks = Produk::join('kategoris', 'kategoris.id', '=', 'produks.kategori_id')
+            ->select(
+                'produks.id',
+                'produks.kode_produk',
+                'produks.nama_produk',
+                'kategoris.nama_kategori'
+            )
+            ->when($request->search, function ($q, $search) {
+                $q->where('produks.nama_produk', 'like', "%{$search}%")
+                ->orWhere('produks.kode_produk', 'like', "%{$search}%");
+            })
             ->take(15)
             ->get();
 
