@@ -38,7 +38,7 @@ $(function () {
 
     function addResultPelanggan(item) {
         const { id, nama } = item;
-        const btn = `<button type="button" class="btn btn-xs btn-success" onclick="addPelanggan(${id})">Pilih</button>`;
+        const btn = `<button type="button" class="btn btn-xs btn-success" onclick="addPelanggan(${id})">ADD</button>`;
         const row = `<tr>
             <td>${nama}</td>
             <td class="text-right">${btn}</td>

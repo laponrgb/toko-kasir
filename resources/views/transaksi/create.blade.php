@@ -7,7 +7,7 @@ Transaksi
 
 @section('content')
 <div class="row">
-    <div class="col-4">
+    <div class="col-4"> 
         @include('transaksi.form-code')
         
         <div class="card card-orange card-outline card-tab">

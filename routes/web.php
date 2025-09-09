@@ -38,6 +38,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('pelanggan', PelangganController::class);
     Route::resource('kategori', KategoriController::class);
     Route::resource('produk', ProdukController::class);
+    Route::post('/produk/store-multiple', [ProdukController::class, 'storeMultiple'])->name('produk.storeMultiple');
+
 
     Route::get('stok/produk', [StokController::class, 'produk'])->name('stok.produk');
     Route::resource('stok', StokController::class)->only(['index', 'create', 'store', 'destroy']);

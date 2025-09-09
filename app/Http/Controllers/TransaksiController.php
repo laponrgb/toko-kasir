@@ -64,19 +64,16 @@ class TransaksiController extends Controller
     $no = $lastPenjualan ? $lastPenjualan->id + 1 : 1;
     $no = sprintf("%04d", $no);
 
-    // === Cek pelanggan ===
     $pelangganId = $cart->getExtraInfo('pelanggan.id');
 
     if (!$pelangganId) {
-        // Kalau tidak ada pelanggan dipilih → cari/insert default "Pelanggan"
         $defaultPelanggan = Pelanggan::firstOrCreate(
             ['nama' => 'Pelanggan'],
-            ['alamat' => '-', 'telepon' => '-'] // kolom default
+            ['alamat' => '-', 'telepon' => '-']
         );
         $pelangganId = $defaultPelanggan->id;
     }
 
-    // === Simpan transaksi utama ===
     $penjualan = Penjualan::create([
         'user_id' => $user->id,
         'pelanggan_id' => $pelangganId,

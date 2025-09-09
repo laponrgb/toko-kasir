@@ -41,7 +41,7 @@
         </p>
         <hr>
         <p>
-            Kode Transaksi : {{ $penjualan->kode }} <br>
+            Kode Transaksi : {{ $penjualan->nomor_transaksi }} <br>
             Tanggal : {{ date('d/m/Y H:i:s', strtotime($penjualan->tanggal)) }} <br>
             Pelanggan : {{ $pelanggan->nama }} <br>
             Kasir : {{ $user->nama }}
