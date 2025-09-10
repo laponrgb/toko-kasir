@@ -14,18 +14,23 @@ class TransaksiController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->search;
+        $search = trim($request->search);
 
         $penjualans = Penjualan::join('users', 'users.id', 'penjualans.user_id')
             ->join('pelanggans', 'pelanggans.id', 'penjualans.pelanggan_id')
             ->select('penjualans.*', 'users.nama as nama_kasir', 'pelanggans.nama as nama_pelanggan')
-            ->orderBy('id', 'desc')
-            ->when($search, function ($q, $search) {
-                return $q->where('nomor_transaksi', 'like', "%{$search}%");
+            ->orderBy('penjualans.id', 'desc')
+            ->when($search !== '' && strlen($search) >= 4, function ($q) use ($search) {
+                return $q->whereRaw('LOWER(nomor_transaksi) LIKE ?', ['%' . strtolower($search) . '%']);
+            })
+            ->when($search !== '' && strlen($search) < 4, function ($q) {
+                return $q->whereRaw('1 = 0');
             })
             ->paginate();
 
-        if ($search) $penjualans->appends(['search' => $search]);
+        if ($search !== '') {
+            $penjualans->appends(['search' => $search]);
+        }
 
         return view('transaksi.index', [
             'penjualans' => $penjualans

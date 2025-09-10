@@ -9,16 +9,20 @@ class UserController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->search;
+        $search = trim($request->search);
 
         $users = User::orderBy('id')
-            ->when($search, function ($q, $search) {
-                return $q->where('nama', 'like', "%{$search}%")
-                         ->orWhere('username', 'like', "%{$search}%");
+            ->when($search !== '' && strlen($search) >= 3, function ($q) use ($search) {
+                $lowerSearch = strtolower($search);
+                return $q->whereRaw('LOWER(nama) LIKE ?', ['%' . $lowerSearch . '%'])
+                        ->orWhereRaw('LOWER(username) LIKE ?', ['%' . $lowerSearch . '%']);
+            })
+            ->when($search !== '' && strlen($search) < 3, function ($q) {
+                return $q->whereRaw('1 = 0');
             })
             ->paginate();
 
-        if ($search) {
+        if ($search !== '') {
             $users->appends(['search' => $search]);
         }
 

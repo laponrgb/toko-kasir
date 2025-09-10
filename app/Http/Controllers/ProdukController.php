@@ -9,24 +9,33 @@ use Illuminate\Http\Request;
 class ProdukController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->search;
+{
+    $search = $request->search;
 
-        $produks = Produk::join('kategoris', 'kategoris.id', '=', 'produks.kategori_id')
-            ->orderBy('produks.id')
-            ->select('produks.*', 'kategoris.nama_kategori')
-            ->when($search, function ($q) use ($search) {
-                return $q->where('kode_produk', 'like', "%{$search}%")
-                         ->orWhere('nama_produk', 'like', "%{$search}%");
-            })
-            ->paginate();
+    $produks = Produk::join('kategoris', 'kategoris.id', '=', 'produks.kategori_id')
+        ->orderBy('produks.id')
+        ->select('produks.*', 'kategoris.nama_kategori')
+        ->when($search, function ($q) use ($search) {
+            $lowerSearch = strtolower($search);
 
-        if ($search) $produks->appends(['search' => $search]);
+            if (strlen($search) >= 3) {
+                return $q->whereRaw('LOWER(produks.kode_produk) = ?', [$lowerSearch])
+                         ->orWhereRaw('LOWER(produks.nama_produk) LIKE ?', ['%' . $lowerSearch . '%']);
+            }
 
-        return view('produk.index', [
-            'produks' => $produks
-        ]);
+            return $q->whereRaw('LOWER(produks.kode_produk) = ?', [$lowerSearch]);
+        })
+        ->paginate();
+
+    if ($search) {
+        $produks->appends(['search' => $search]);
     }
+
+    return view('produk.index', [
+        'produks' => $produks
+    ]);
+}
+
 
     public function create()
     {

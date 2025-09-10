@@ -66,7 +66,7 @@
                             <td>{{ $produk->nama_produk }}</td>
                             <td>{{ $produk->nama_kategori }}</td>
                             <td>{{ $produk->harga_produk }}</td>
-                            <td>{{ $produk->diskon }}</td>
+                            <td>{{ $produk->diskon }}%</td>
                             <td>{{ $produk->harga }}</td>
                             <td>{{ $produk->stok }}</td>
                             <td class="text-right">
@@ -85,7 +85,7 @@
                         <tr>
                             <td colspan="11" class="text-center text-muted py-4">
                                 <i class="fas fa-box-open fa-3x d-block mb-2"></i>
-                                <div>Produk tidak ditemukan</div>
+                                <div>Produk tidak ditemukan, masukan kode/nama produk spesifik</div>
                             </td>
                         </tr>
                     @endforelse

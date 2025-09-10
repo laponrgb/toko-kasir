@@ -30,9 +30,17 @@ $(function () {
     function fetchCariPelanggan(search) {
         $.getJSON("/transaksi/pelanggan", { search: search }, function (response) {
             $('#resultPelanggan').html('');
-            response.forEach(item => {
-                addResultPelanggan(item);
-            });
+            if (response.length > 0) {
+                response.forEach(item => {
+                    addResultPelanggan(item);
+                });
+            } else {
+                $('#resultPelanggan').html(`
+                    <tr>
+                        <td colspan="2" class="text-center text-muted">Pelanggan tidak ditemukan</td>
+                    </tr>
+                `);
+            }
         });
     }
 
@@ -48,7 +56,7 @@ $(function () {
 
     window.addPelanggan = function(id) {
         $.post("/transaksi/pelanggan", { id: id }, function (response) {
-            fetchCart(); // Asumsikan ini fungsi untuk refresh keranjang
+            fetchCart(); 
         });
     }
 });

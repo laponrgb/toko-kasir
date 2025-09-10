@@ -77,7 +77,7 @@
                         <tr>
                             <td colspan="6" class="text-center text-muted py-4">
                                 <i class="fas fa-users fa-3x d-block mb-2"></i>
-                                <div>Produk tidak ditemukan</div>
+                                <div>Pelanggan tidak ditemukan, minimal 3 karakter</div>
                             </td>
                         </tr>
                     @endforelse

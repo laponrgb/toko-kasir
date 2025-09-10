@@ -31,9 +31,17 @@
         function fetchCariProduk(search) {
             $.getJSON("/transaksi/produk", { search: search }, function (response) {
                 $('#resultProduk').html('');
-                response.forEach(item => {
-                    addResultProduk(item);
-                });
+                if (response.length > 0) {
+                    response.forEach(item => {
+                        addResultProduk(item);
+                    });
+                } else {
+                    $('#resultProduk').html(`
+                        <tr>
+                            <td colspan="2" class="text-center text-muted">Produk tidak ditemukan</td>
+                        </tr>
+                    `);
+                }
             });
         }
 

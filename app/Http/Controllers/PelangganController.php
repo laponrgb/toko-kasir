@@ -9,15 +9,19 @@ class PelangganController extends Controller
 {
     public function index(Request $request)
     {
-        $search = $request->search;
+        $search = trim($request->search);
 
         $pelanggans = Pelanggan::orderBy('id')
-            ->when($search, function ($query, $search) {
-                return $query->where('nama', 'like', "%{$search}%");
+            ->when($search !== '' && strlen($search) >= 3, function ($query) use ($search) {
+                return $query->whereRaw('LOWER(nama) LIKE ?', ['%' . strtolower($search) . '%']);
+            })
+            ->when($search !== '' && strlen($search) < 3, function ($query) {
+                // Kalau input ada tapi < 3 karakter → paksa hasil kosong
+                return $query->whereRaw('1 = 0');
             })
             ->paginate();
 
-        if ($search) {
+        if ($search !== '') {
             $pelanggans->appends(['search' => $search]);
         }
 
@@ -25,6 +29,7 @@ class PelangganController extends Controller
             'pelanggans' => $pelanggans
         ]);
     }
+
 
     public function create()
     {
